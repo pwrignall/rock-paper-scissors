@@ -23,10 +23,6 @@
             return firstLetter + remainingLetters;
         }
 
-        let playerSelection = prompt('Rock / Paper / Scissors?');
-        playerSelection = capitilise(playerSelection);
-        const computerSelection = computerPlay();
-
         function playRound(playerSelection, computerSelection) {
 
             if (playerSelection == computerSelection) {
@@ -53,7 +49,40 @@
             }
         }
 
-        console.log(playRound(playerSelection, computerSelection));
+        function game() {
+
+            let playerScore = 0;
+            let computerScore = 0;
+            let rounds = 0;
+
+            while (rounds < 5) {
+
+                let playerSelection = prompt('Rock / Paper / Scissors?');
+                playerSelection = capitilise(playerSelection);
+                const computerSelection = computerPlay();
+
+                let roundResult = playRound(playerSelection, computerSelection);
+
+                console.log(roundResult);
+
+                if (roundResult.toLowerCase().search('lose') != -1) {
+                    computerScore++;
+                    rounds++;
+                    console.log(`Round ${rounds}: You have ${playerScore}, Computer has ${computerScore}`)
+                } else if (roundResult.toLowerCase().search('win') != -1) {
+                    playerScore++;
+                    rounds++;
+                    console.log(`Round ${rounds}: You have ${playerScore}, Computer has ${computerScore}`)
+                } else {
+                    console.log('Go again.')
+                }
+            }
+
+            let gameResult = (playerScore > computerScore) ? 'YOU WON THE GAME!' : 'YOU LOST THE GAME!';
+            console.log(gameResult);
+        }
+
+
 
     </script>
 
