@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Rock Paper Scissors</title>
+    <meta charset='utf-8'>
+
+</head>
+
+<body>
+
+    <script>
+
+        function computerPlay() {
+            let computerOptions = ['Rock', 'Paper', 'Scissors'];
+            return computerOptions[Math.floor(Math.random() * computerOptions.length)]
+        }
+
+        function capitilise(string) {
+            let firstLetter = string.slice(0, 1).toUpperCase();
+            let remainingLetters = string.slice(1).toLowerCase();
+            return firstLetter + remainingLetters;
+        }
+
+        let playerSelection = prompt('Rock / Paper / Scissors?');
+        playerSelection = capitilise(playerSelection);
+        const computerSelection = computerPlay();
+
+        function playRound(playerSelection, computerSelection) {
+
+            if (playerSelection == computerSelection) {
+                return `Tie. ${playerSelection} matches ${computerSelection}`
+            } else {
+                switch (playerSelection) {
+                    case 'Rock':
+                        switch (computerSelection) {
+                            case 'Paper': return 'You lose! Paper beats Rock'
+                            case 'Scissors': return 'You win! Rock beats Scissors'
+                        }
+                    case 'Paper':
+                        switch (computerSelection) {
+                            case 'Rock': return 'You win! Paper beats Rock'
+                            case 'Scissors': return 'You lose! Scissors beats Paper'
+                        }
+                    case 'Scissors':
+                        switch (computerSelection) {
+                            case 'Rock': return 'You lose! Rock beats Scissors'
+                            case 'Paper': return 'You win! Scissors beats Paper'
+                        }
+                    default: 'You didn\'t enter a valid choice.'
+                }
+            }
+        }
+
+        console.log(playRound(playerSelection, computerSelection));
+
+    </script>
+
+</body>
+
+</html>
