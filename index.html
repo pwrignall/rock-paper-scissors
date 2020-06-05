@@ -5,10 +5,33 @@
 <head>
     <title>Rock Paper Scissors</title>
     <meta charset='utf-8'>
+    <link rel="stylesheet" href="styles/reset.css">
+    <link rel="stylesheet" href="styles/style.css">
 
 </head>
 
 <body>
+
+    <header>
+
+        <h1>Rock, Paper, Scissors</h1>
+
+    </header>
+
+    <main>
+
+        <div id="weapon-choices">
+            <p>Choose your weapon!</p>
+            <button id="rock" class="player-options">Rock</button>
+            <button id="paper" class="player-options">Paper</button>
+            <button id="scissors" class="player-options">Scissors</button>
+        </div>
+
+        <div id="current-round"></div>
+
+        <div id="game-result"></div>
+
+    </main>
 
     <script>
 
@@ -16,12 +39,6 @@
             let computerOptions = ['Rock', 'Paper', 'Scissors'];
             return computerOptions[Math.floor(Math.random() *
                 computerOptions.length)]
-        }
-
-        function capitilise(string) {
-            let firstLetter = string.slice(0, 1).toUpperCase();
-            let remainingLetters = string.slice(1).toLowerCase();
-            return firstLetter + remainingLetters;
         }
 
         function playRound(playerSelection, computerSelection) {
@@ -62,41 +79,104 @@
             }
         }
 
-        function game() {
+        const divCurrentRound = document.querySelector('#current-round');
+        const divRoundResult = document.createElement('div');
+        const divPlayerRound = document.createElement('div');
+        const divComputerRound = document.createElement('div');
+        const buttons = document.querySelectorAll('.player-options');
+        const divGameResult = document.querySelector('#game-result');
+        const pGameResult = document.createElement('p');
+        const btnResetGame = document.createElement('button');
+        divRoundResult.setAttribute('id', 'round-result');
+        divPlayerRound.setAttribute('id', 'player-round');
+        divComputerRound.setAttribute('id', 'computer-round');
 
-            let playerScore = 0;
-            let computerScore = 0;
-            let rounds = 0;
+        let playerScore;
+        let computerScore;
+        let gameFinished = false;
 
-            while (rounds < 5) {
+        function gameOver(string) {
 
-                let playerSelection = prompt('Rock / Paper / Scissors?');
-                playerSelection = capitilise(playerSelection);
-                const computerSelection = computerPlay();
+            buttons.forEach(button => button.removeEventListener('click', clickToPlay));
+            buttons.forEach(button => button.classList.add('button-inactive'));
 
-                let roundResult = playRound(playerSelection, computerSelection);
-
-                console.log(roundResult);
-
-                if (roundResult.toLowerCase().search('lose') != -1) {
-                    computerScore++;
-                    rounds++;
-                    console.log(`Round ${rounds}: You have ${playerScore}, Computer has ${computerScore}`)
-                } else if (roundResult.toLowerCase().search('win') != -1) {
-                    playerScore++;
-                    rounds++;
-                    console.log(`Round ${rounds}: You have ${playerScore}, Computer has ${computerScore}`)
-                } else {
-                    console.log('Go again.')
-                }
+            if (string == 'playerWin') {
+                pGameResult.textContent = 'YOU WON THE GAME!';
+            } else {
+                pGameResult.textContent = 'YOU LOST THE GAME!';
             }
+            divGameResult.appendChild(pGameResult);
 
-            let gameResult = (playerScore > computerScore)
-                ? 'YOU WON THE GAME!' : 'YOU LOST THE GAME!';
-            console.log(gameResult);
+            btnResetGame.textContent = 'Play again'
+            divGameResult.appendChild(btnResetGame);
+
+            btnResetGame.addEventListener('click', resetGame);
+
+            gameFinished = true;
+
+
+
         }
 
+        function clickToPlay(e) {
 
+            function checkScores() {
+                if (playerScore == 5 || computerScore == 5) {
+                    if (playerScore == 5) {
+                        gameOver('playerWin');
+                    } else {
+                        gameOver('computerWin');
+                    }
+                }
+            };
+
+            let playerChoice = e.target.textContent;
+            let computerChoice = computerPlay();
+            let roundResult = playRound(playerChoice, computerChoice);
+            divRoundResult.textContent = roundResult;
+
+            if (roundResult.toLowerCase().search('lose') != -1) {
+                computerScore++;
+                checkScores();
+            } else if (roundResult.toLowerCase().search('win') != -1) {
+                playerScore++;
+                checkScores();
+            }
+
+            divPlayerRound.innerHTML = `<p>You</p><br><span class="score">${playerScore}</span>`;
+            divComputerRound.innerHTML = `<p>Computer</p><br><span class="score">${computerScore}</span>`;
+        };
+
+
+        function resetGame() {
+            if (gameFinished) removeElements();
+            buttons.forEach(button => button.addEventListener('click', clickToPlay));
+            buttons.forEach(button => button.classList.remove('button-inactive'));
+
+            divCurrentRound.appendChild(divPlayerRound);
+            divCurrentRound.appendChild(divRoundResult);
+            divCurrentRound.appendChild(divComputerRound);
+
+            divPlayerRound.textContent = '';
+            divRoundResult.textContent = '';
+            divComputerRound.textContent = '';
+
+            playerScore = 0;
+            computerScore = 0;
+            rounds = 0;
+            gameFinished = false;
+        };
+
+        function removeElements() {
+            while (divCurrentRound.childNodes.length > 0) {
+                divCurrentRound.removeChild(divCurrentRound.lastChild)
+            }
+            while (divGameResult.childNodes.length > 0) {
+                divGameResult.removeChild(divGameResult.lastChild);
+            }
+        };
+
+        resetGame();
 
     </script>
 
